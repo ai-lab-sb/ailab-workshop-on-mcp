@@ -38,7 +38,7 @@ async def crear_agente_matematico():
     if not os.getenv("GOOGLE_API_KEY"):
         raise ValueError("Se requiere GOOGLE_API_KEY en el archivo .env")
     
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-exp", temperature=0)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
     llm_with_tools = llm.bind_tools(tools)
     print("   ✅ Modelo configurado\n")
     

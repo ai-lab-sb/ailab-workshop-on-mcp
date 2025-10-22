@@ -1,15 +1,15 @@
-# Módulo 7: Proyecto Final - Agente de Tienda con MCP
+# Módulo 7: Proyecto Final - Agente de Seguros con MCP
 
 ## Descripción del Proyecto
 
-En este módulo construirás un **sistema completo de agente conversacional** que consulta una base de datos de productos y clientes via MCP. El proyecto incluye:
+En este módulo construirás un **sistema completo de agente conversacional** para una aseguradora que consulta información de pólizas, clientes y productos de seguros via MCP. El proyecto incluye:
 
-1. **Servidor MCP** con base de datos SQLite
+1. **Servidor MCP** con base de datos SQLite de seguros
 2. **Agente LangGraph** que consume el servidor MCP
 3. **API REST** para exponer el agente
 4. **Testing completo** del sistema
 
-Este es un proyecto de nivel producción que demuestra la integración completa de MCP en una aplicación real.
+Este es un proyecto de nivel producción que demuestra la integración completa de MCP en una aplicación real del sector asegurador.
 
 ## Arquitectura del Sistema
 
@@ -28,51 +28,52 @@ Este es un proyecto de nivel producción que demuestra la integración completa 
          ▼
 ┌─────────────────┐         MCP          ┌─────────────────┐
 │  Agente         │◄─────────────────────►│  Servidor MCP   │
-│  LangGraph      │   (langchain-mcp)    │  Base de Datos  │
+│  LangGraph      │   (langchain-mcp)    │  Aseguradora    │
 │  + Memoria      │                      └────────┬────────┘
 └─────────────────┘                              │
                                                  ▼
                                           ┌──────────────┐
                                           │   SQLite     │
-                                          │  tienda.db   │
+                                          │ seguros.db   │
                                           └──────────────┘
 ```
 
 ## Componentes del Proyecto
 
-### 1. servidor_tienda.py
+### 1. servidor/servidor_seguros.py
 
 Servidor MCP completo con:
-- Consultas de productos (por ID, categoría, precio)
-- Consultas de clientes (por ID, ciudad)
-- Estadísticas y agregaciones
-- Búsquedas avanzadas
+- Consultas de pólizas (por ID, tipo, estado)
+- Consultas de clientes asegurados (por ID, ciudad)
+- Productos de seguros disponibles
+- Búsquedas avanzadas y filtros
 
 **Herramientas disponibles**:
-- `obtener_todos_productos()` - Lista todos los productos
-- `buscar_producto_por_id(id)` - Busca producto específico
-- `buscar_productos_por_categoria(categoria)` - Filtra por categoría
-- `buscar_productos_por_precio(min, max)` - Filtra por rango de precio
-- `productos_en_stock()` - Solo productos disponibles
-- `obtener_todos_clientes()` - Lista todos los clientes
+- `obtener_todas_polizas()` - Lista todas las pólizas activas
+- `buscar_poliza_por_id(id)` - Busca póliza específica
+- `buscar_polizas_por_cliente(cliente_id)` - Pólizas de un cliente
+- `buscar_polizas_por_tipo(tipo)` - Filtra por tipo de seguro
+- `obtener_productos_seguros()` - Lista productos de seguros disponibles
+- `buscar_producto_seguro(id)` - Busca producto de seguro específico
+- `obtener_todos_clientes()` - Lista todos los clientes asegurados
 - `buscar_cliente_por_id(id)` - Busca cliente específico
-- `buscar_clientes_por_ciudad(ciudad)` - Filtra por ciudad
+- `buscar_clientes_por_ciudad(ciudad)` - Filtra clientes por ciudad
 
-### 2. agente_tienda.py
+### 2. agente/agente_seguros.py
 
 Agente LangGraph con:
 - Integración con servidor MCP
 - Memoria de conversación (threads)
-- System message especializado
+- System message especializado en seguros
 - Manejo robusto de errores
 
 **Características**:
-- Solo responde sobre productos y clientes
+- Solo responde sobre pólizas, productos de seguros y clientes
 - Usa herramientas MCP automáticamente
 - Mantiene contexto de conversación
-- Proporciona respuestas claras y estructuradas
+- Proporciona respuestas claras sobre seguros
 
-### 3. api_rest.py
+### 3. agente/api_rest.py
 
 API REST con FastAPI:
 - Endpoint `/chat` para conversar con el agente
@@ -87,9 +88,9 @@ GET /history/{thread_id}
 GET /health
 ```
 
-### 4. test_agente.py
+### 4. agente/test_agente.py
 
-Suite de testing completa:
+Suite de testing completa (opcional):
 - Tests de servidor MCP
 - Tests del agente LangGraph
 - Tests de la API REST
@@ -124,39 +125,41 @@ python -c "from servidor_tienda import init_database; init_database()"
 
 ```bash
 # Terminal 1
-cd 07-proyecto-final
-python servidor_tienda.py
+cd 07-proyecto-final/servidor
+python servidor_seguros.py
 ```
 
 Debe mostrar:
 ```
-Servidor MCP - Tienda
+Servidor MCP - Aseguradora
 Iniciando servidor en http://localhost:8200
 ```
 
-### Paso 2: Probar Agente Directamente (Opcional)
+### Paso 2: Iniciar API REST
 
 ```bash
 # Terminal 2
-python agente_tienda.py
-```
-
-Esto ejecuta una demo del agente con preguntas predefinidas.
-
-### Paso 3: Iniciar API REST
-
-```bash
-# Terminal 2 (o 3 si usaste el paso 2)
+cd 07-proyecto-final/agente
 python api_rest.py
 ```
 
 Debe mostrar:
 ```
-API REST - Agente de Tienda
+API REST - Agente de Seguros
 Accede a http://localhost:8000/docs
 ```
 
-### Paso 4: Probar con Postman o curl
+### Paso 3: Probar desde Swagger UI
+
+Abre tu navegador en `http://localhost:8000/docs` y verás la interfaz interactiva de Swagger donde puedes:
+
+1. **POST /chat** - Enviar mensajes al agente
+2. **GET /history/{thread_id}** - Ver historial de conversación
+3. **GET /health** - Verificar estado del sistema
+
+### Paso 4 (Opcional): Probar con curl o Postman
+
+Si prefieres usar la línea de comandos:
 
 **Verificar salud**:
 ```bash
@@ -168,7 +171,7 @@ curl http://localhost:8000/health
 curl -X POST http://localhost:8000/chat \
   -H "Content-Type: application/json" \
   -d '{
-    "message": "¿Qué productos tienes?",
+    "message": "¿Qué tipos de seguros ofrecen?",
     "thread_id": "usuario_1"
   }'
 ```
@@ -187,7 +190,7 @@ Envía un mensaje al agente y recibe respuesta.
 **Request**:
 ```json
 {
-  "message": "Muéstrame los productos de Electrónica",
+  "message": "Muéstrame las pólizas de seguro de vida",
   "thread_id": "usuario_1"
 }
 ```
@@ -195,12 +198,12 @@ Envía un mensaje al agente y recibe respuesta.
 **Response**:
 ```json
 {
-  "response": "Tenemos 4 productos en la categoría Electrónica:\n\n1. Laptop Dell XPS - $999.99 (15 en stock)\n2. Mouse Logitech - $29.99 (50 en stock)\n3. Teclado Mecánico - $79.99 (30 en stock)\n4. Monitor 24 pulgadas - $299.99 (20 en stock)",
+  "response": "Tenemos 3 pólizas activas de seguro de vida:\n\n1. Póliza #1001 - Cliente: Juan Pérez - Prima: $150.00/mes - Cobertura: $100,000.00\n2. Póliza #1004 - Cliente: Luis Rodríguez - Prima: $200.00/mes - Cobertura: $150,000.00\n3. Póliza #1006 - Cliente: Laura Fernández - Prima: $120.00/mes - Cobertura: $80,000.00",
   "thread_id": "usuario_1",
   "tools_used": [
     {
-      "name": "buscar_productos_por_categoria",
-      "args": {"categoria": "Electrónica"}
+      "name": "buscar_polizas_por_tipo",
+      "args": {"tipo": "Vida"}
     }
   ]
 }
@@ -248,26 +251,26 @@ El agente mantiene contexto entre mensajes usando threads:
 # Primera pregunta
 POST /chat
 {
-  "message": "¿Qué productos tienes?",
+  "message": "¿Qué pólizas tiene activas Juan Pérez?",
   "thread_id": "user_123"
 }
-# Respuesta: Lista de productos
+# Respuesta: Lista de pólizas del cliente
 
 # Segunda pregunta (usa contexto)
 POST /chat
 {
-  "message": "¿Cuáles son los más baratos?",
+  "message": "¿Cuánto paga en total al mes?",
   "thread_id": "user_123"
 }
-# El agente recuerda que ya mostró productos
+# El agente recuerda las pólizas y calcula el total
 ```
 
 ## Testing
 
-### Ejecutar Tests
+### Ejecutar Tests Automatizados (Opcional)
 
 ```bash
-cd 07-proyecto-final
+cd 07-proyecto-final/agente
 python test_agente.py
 ```
 
@@ -283,59 +286,59 @@ Los tests verifican:
 
 **Test 1: Consulta Simple**
 ```
-Pregunta: "¿Cuántos productos tienes?"
-Esperado: Usa obtener_todos_productos() y cuenta
+Pregunta: "¿Cuántas pólizas activas hay?"
+Esperado: Usa obtener_todas_polizas() y cuenta
 ```
 
-**Test 2: Búsqueda por Categoría**
+**Test 2: Búsqueda por Tipo**
 ```
-Pregunta: "Muéstrame productos de Muebles"
-Esperado: Usa buscar_productos_por_categoria("Muebles")
-```
-
-**Test 3: Filtro por Precio**
-```
-Pregunta: "¿Qué productos cuestan menos de $100?"
-Esperado: Usa buscar_productos_por_precio(0, 100)
+Pregunta: "Muéstrame las pólizas de seguro de auto"
+Esperado: Usa buscar_polizas_por_tipo("Auto")
 ```
 
-**Test 4: Consulta de Clientes**
+**Test 3: Consulta de Cliente**
 ```
-Pregunta: "¿Qué clientes tengo en Bogotá?"
-Esperado: Usa buscar_clientes_por_ciudad("Bogotá")
+Pregunta: "¿Qué seguros tiene contratados María García?"
+Esperado: Busca cliente y sus pólizas
+```
+
+**Test 4: Productos Disponibles**
+```
+Pregunta: "¿Qué tipos de seguros ofrecen?"
+Esperado: Usa obtener_productos_seguros()
 ```
 
 **Test 5: Pregunta Fuera de Dominio**
 ```
 Pregunta: "¿Cuál es la capital de Francia?"
-Esperado: "Lo siento, solo puedo ayudar con consultas sobre productos y clientes"
+Esperado: "Lo siento, solo puedo ayudar con consultas sobre seguros, pólizas y clientes"
 ```
 
 ## Personalización
 
 ### Cambiar el System Message
 
-Edita `agente_tienda.py` para modificar el comportamiento:
+Edita `agente_seguros.py` para modificar el comportamiento:
 
 ```python
 self.system_message = SystemMessage(
-    content="""Eres un asistente de ventas amigable...
+    content="""Eres un asistente de seguros profesional y empático...
     
-    - Saluda siempre al cliente
-    - Ofrece recomendaciones
-    - Pregunta si necesita algo más
+    - Explica coberturas de forma clara
+    - Ayuda a comparar pólizas
+    - Responde dudas sobre seguros
     """
 )
 ```
 
 ### Añadir Más Herramientas
 
-En `servidor_tienda.py`:
+En `servidor_seguros.py`:
 
 ```python
 @app.tool
-def recomendar_productos(categoria: str, presupuesto: float) -> List[Dict]:
-    """Recomienda productos según categoría y presupuesto"""
+def calcular_prima_total_cliente(cliente_id: int) -> Dict[str, Any]:
+    """Calcula el total de primas mensuales de un cliente"""
     # Tu lógica aquí
     pass
 ```
@@ -375,37 +378,37 @@ CMD ["python", "api_rest.py"]
 
 ## Ejercicios de Extensión
 
-### Ejercicio 1: Carrito de Compras
-Añade funcionalidad de carrito:
-- Agregar producto al carrito
-- Ver carrito actual
-- Calcular total
+### Ejercicio 1: Cálculo de Cotizaciones
+Añade funcionalidad de cotizaciones:
+- Calcular prima según edad y cobertura
+- Comparar diferentes planes
+- Generar cotización personalizada
 
-### Ejercicio 2: Recomendaciones
-Implementa sistema de recomendaciones:
-- Productos similares
-- Frecuentemente comprados juntos
-- Basado en historial del cliente
+### Ejercicio 2: Renovaciones
+Implementa sistema de renovaciones:
+- Pólizas próximas a vencer
+- Alertas de renovación
+- Historial de renovaciones
 
-### Ejercicio 3: Multilenguaje
-Soporte para varios idiomas:
-- Detectar idioma del usuario
-- Responder en el idioma correspondiente
-- Mantener nombres de productos originales
+### Ejercicio 3: Reclamaciones
+Sistema básico de reclamaciones:
+- Registrar nueva reclamación
+- Consultar estado de reclamaciones
+- Historial de reclamaciones por cliente
 
 ### Ejercicio 4: Analytics
 Dashboard de analíticas:
-- Productos más consultados
-- Preguntas más frecuentes
-- Tasa de conversión (consulta → compra)
+- Pólizas más contratadas
+- Clientes por tipo de seguro
+- Ingresos por primas mensuales
 
 ## Recursos del Proyecto
 
 **Archivos**:
-- [`servidor_tienda.py`](./servidor_tienda.py) - Servidor MCP
-- [`agente_tienda.py`](./agente_tienda.py) - Agente LangGraph
-- [`api_rest.py`](./api_rest.py) - API REST con FastAPI
-- [`test_agente.py`](./test_agente.py) - Suite de testing
+- [`servidor/servidor_seguros.py`](./servidor/servidor_seguros.py) - Servidor MCP de seguros
+- [`agente/agente_seguros.py`](./agente/agente_seguros.py) - Agente LangGraph especializado
+- [`agente/api_rest.py`](./agente/api_rest.py) - API REST con FastAPI
+- [`agente/test_agente.py`](./agente/test_agente.py) - Suite de testing (opcional)
 
 ## Conclusión
 

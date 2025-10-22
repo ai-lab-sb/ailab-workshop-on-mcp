@@ -5,7 +5,7 @@ Verifica servidor MCP, agente LangGraph y API REST.
 
 import asyncio
 import httpx
-from agente_tienda import AgenteТienda
+from agente_seguros import AgenteSeguro
 
 
 async def test_servidor_mcp():
@@ -29,23 +29,22 @@ async def test_servidor_mcp():
                 
     except Exception as e:
         print(f"❌ Error al conectar con servidor MCP: {e}")
-        print("   Ejecuta: python servidor_tienda.py")
+        print("   Ejecuta: python servidor_seguros.py")
         return False
 
 
-async def test_agente_inicializacion():
+def test_agente_inicializacion():
     """Test 2: Verificar que el agente se inicialice correctamente"""
     print("\n" + "=" * 60)
     print("Test 2: Inicialización del Agente")
     print("=" * 60)
     
     try:
-        agente = AgenteТienda()
-        await agente._build_graph()
+        agente = AgenteSeguro()
         
-        if agente._graph and agente._tools:
+        if agente.graph and agente.client:
             print(f"✅ Agente inicializado correctamente")
-            print(f"   Herramientas cargadas: {len(agente._tools)}")
+            print(f"   Herramientas cargadas: {len(agente.client.get_tools())}")
             return True, agente
         else:
             print("❌ Agente no se inicializó correctamente")
@@ -56,7 +55,7 @@ async def test_agente_inicializacion():
         return False, None
 
 
-async def test_agente_consultas(agente):
+def test_agente_consultas(agente):
     """Test 3: Probar consultas al agente"""
     print("\n" + "=" * 60)
     print("Test 3: Consultas al Agente")
@@ -67,8 +66,8 @@ async def test_agente_consultas(agente):
         return False
     
     test_queries = [
-        "¿Cuántos productos tienes?",
-        "Muéstrame productos de Electrónica",
+        "¿Cuántas pólizas activas tenemos?",
+        "Muéstrame los seguros de vida",
     ]
     
     exito = True
@@ -76,12 +75,10 @@ async def test_agente_consultas(agente):
     for i, query in enumerate(test_queries, 1):
         print(f"\nConsulta {i}: {query}")
         try:
-            resultado = await agente.chat(query, thread_id="test")
+            resultado = agente.chat(query, thread_id="test")
             
-            if resultado["response"]:
-                print(f"✅ Respuesta recibida ({len(resultado['response'])} caracteres)")
-                if resultado["tools_used"]:
-                    print(f"   Herramientas usadas: {[t['name'] for t in resultado['tools_used']]}")
+            if resultado:
+                print(f"✅ Respuesta recibida ({len(resultado)} caracteres)")
             else:
                 print("❌ Sin respuesta")
                 exito = False
@@ -115,7 +112,7 @@ async def test_api_rest():
             # Test chat endpoint
             print("\nProbando POST /chat...")
             chat_data = {
-                "message": "¿Qué productos tienes?",
+                "message": "¿Qué pólizas de vida están activas?",
                 "thread_id": "test_api"
             }
             response = await client.post(
@@ -159,8 +156,8 @@ async def run_all_tests():
     print("\n" + "=" * 60)
     print("SUITE DE TESTING - Proyecto Final MCP Workshop")
     print("=" * 60)
-    print("\nAsegúrate de tener corriendo:")
-    print("1. Terminal 1: python servidor_tienda.py")
+    print("\n⚠️  Asegúrate de tener corriendo:")
+    print("1. Terminal 1: python servidor_seguros.py")
     print("2. Terminal 2: python api_rest.py")
     
     input("\nPresiona Enter para comenzar los tests...")
@@ -181,11 +178,11 @@ async def run_all_tests():
         return
     
     # Test 2 y 3: Agente
-    agente_ok, agente = await test_agente_inicializacion()
+    agente_ok, agente = test_agente_inicializacion()
     resultados["agente_init"] = agente_ok
     
     if agente_ok:
-        resultados["agente_queries"] = await test_agente_consultas(agente)
+        resultados["agente_queries"] = test_agente_consultas(agente)
     
     # Test 4: API REST
     resultados["api_rest"] = await test_api_rest()

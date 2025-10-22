@@ -10,7 +10,7 @@ Este workshop te guiará desde los fundamentos de MCP hasta la construcción de 
 - **FastMCP**: Framework moderno para crear servidores MCP
 - **Herramientas y recursos**: Exposición de funciones como herramientas
 - **Integración con LangGraph**: Uso de `langchain-mcp-adapters`
-- **Proyecto Final**: Agente completo que consulta base de datos via MCP
+- **Proyecto Final**: Agente de aseguradora que consulta pólizas via MCP
 
 ## 📋 Estructura del Workshop
 
@@ -50,10 +50,10 @@ Integración de servidores MCP con LangChain y LangGraph.
 - `06-langchain-integration/agente_simple.py` - Agente con MCP
 
 ### **Módulo 7: Proyecto Final**
-Agente completo con LangGraph que consume servidor MCP de base de datos.
+Agente completo con LangGraph que consume servidor MCP de una aseguradora.
 - `07-proyecto-final/README.md` - Guía del proyecto
-- `07-proyecto-final/servidor_tienda.py` - Servidor MCP de tienda
-- `07-proyecto-final/agente_tienda.py` - Agente LangGraph
+- `07-proyecto-final/servidor_seguros.py` - Servidor MCP de seguros
+- `07-proyecto-final/agente_seguros.py` - Agente LangGraph
 - `07-proyecto-final/api_rest.py` - API REST del agente
 - `07-proyecto-final/test_agente.py` - Testing completo
 
@@ -157,8 +157,8 @@ mcp-workshop/
 │   └── agente_simple.py
 └── 07-proyecto-final/
     ├── README.md
-    ├── servidor_tienda.py
-    ├── agente_tienda.py
+    ├── servidor_seguros.py
+    ├── agente_seguros.py
     ├── api_rest.py
     └── test_agente.py
 ```

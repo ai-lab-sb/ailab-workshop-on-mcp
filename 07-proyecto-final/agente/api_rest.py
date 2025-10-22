@@ -1,5 +1,5 @@
 """
-API REST para exponer el agente de tienda.
+API REST para exponer el agente de seguros.
 Permite interacción con el agente via HTTP requests.
 """
 
@@ -8,11 +8,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import uvicorn
-from agente_tienda import AgenteТienda
+from agente_seguros import AgenteSeguro
 
 app = FastAPI(
-    title="API Agente de Tienda",
-    description="API REST para interactuar con el agente de tienda que usa MCP",
+    title="API Agente de Seguros",
+    description="API REST para interactuar con el agente de seguros que usa MCP",
     version="1.0.0"
 )
 
@@ -48,9 +48,8 @@ async def startup_event():
     """Inicializa el agente al arrancar la API"""
     global agente
     try:
-        print("Inicializando agente de tienda...")
-        agente = AgenteТienda()
-        await agente._build_graph()
+        print("Inicializando agente de seguros...")
+        agente = AgenteSeguro()
         print("✅ Agente inicializado correctamente")
     except Exception as e:
         print(f"❌ Error al inicializar agente: {e}")
@@ -61,7 +60,7 @@ async def startup_event():
 async def root():
     """Endpoint raíz con información de la API"""
     return {
-        "message": "API Agente de Tienda con MCP",
+        "message": "API Agente de Seguros con MCP",
         "version": "1.0.0",
         "endpoints": {
             "POST /chat": "Enviar mensaje al agente",
@@ -86,8 +85,12 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=503, detail="Agente no inicializado")
     
     try:
-        resultado = await agente.chat(request.message, request.thread_id)
-        return ChatResponse(**resultado)
+        respuesta = agente.chat(request.message, request.thread_id)
+        return ChatResponse(
+            response=respuesta,
+            thread_id=request.thread_id,
+            tools_used=[]
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al procesar mensaje: {str(e)}")
 
@@ -107,7 +110,7 @@ async def get_history(thread_id: str):
         raise HTTPException(status_code=503, detail="Agente no inicializado")
     
     try:
-        historial = await agente.get_conversation_history(thread_id)
+        historial = agente.get_history(thread_id)
         return HistoryResponse(thread_id=thread_id, messages=historial)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener historial: {str(e)}")
@@ -129,9 +132,9 @@ async def health_check():
     
     # Verificar conexión con servidor MCP
     try:
-        if agente and agente._tools:
+        if agente and agente.client:
             health_status["mcp_server"] = "connected"
-            health_status["tools_available"] = len(agente._tools)
+            health_status["tools_available"] = len(agente.client.get_tools())
         else:
             health_status["mcp_server"] = "not_connected"
     except Exception:
@@ -143,7 +146,7 @@ async def health_check():
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("API REST - Agente de Tienda")
+    print("API REST - Agente de Seguros")
     print("=" * 60)
     print("\n🚀 Iniciando servidor en http://localhost:8000")
     print("\n📋 Endpoints disponibles:")
