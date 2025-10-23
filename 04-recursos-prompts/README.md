@@ -72,9 +72,7 @@ def analizar_codigo(lenguaje: str, codigo: str):
 3. Bugs potenciales
 
 Código:
-```{lenguaje}
 {codigo}
-```
 """
 ```
 
@@ -144,9 +142,7 @@ def revisar_codigo(lenguaje: str, codigo: str, enfoque: str = "general"):
 Revisa el siguiente código con enfoque en: {enfoque}
 
 Código:
-```{lenguaje}
 {codigo}
-```
 
 Proporciona:
 1. Análisis de calidad

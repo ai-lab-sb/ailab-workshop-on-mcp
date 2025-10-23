@@ -57,6 +57,14 @@ Agente completo con LangGraph que consume servidor MCP de una aseguradora.
 - `07-proyecto-final/api_rest.py` - API REST del agente
 - `07-proyecto-final/test_agente.py` - Testing completo
 
+### **Módulo 8 (Opcional): MCP Servers Existentes**
+Aprende a usar servidores MCP existentes de la comunidad.
+- `08-mcps-existentes/README.md` - Guía completa
+- `08-mcps-existentes/crear_db_ejemplo.py` - Crear base de datos
+- `08-mcps-existentes/cliente_sqlite_mcp.py` - Cliente básico
+- `08-mcps-existentes/agente_sqlite_mcp.py` - Agente con SQLite MCP
+- `08-mcps-existentes/ejemplo_multi_servidor.py` - Múltiples servidores
+
 ## 🚀 Requisitos Previos
 
 ### Conocimientos
@@ -78,7 +86,10 @@ python -m venv venv
 venv\Scripts\activate
 
 # Instalar dependencias base
-pip install fastmcp langchain-google-genai langgraph langchain-mcp-adapters python-dotenv
+pip install -r requirements.txt
+
+# Para el Módulo 8 (opcional): instalar Node.js para servidores npm
+# Descarga desde: https://nodejs.org/
 ```
 
 ## 📚 Metodología de Aprendizaje
@@ -113,6 +124,11 @@ Se recomienda completar el workshop en 2-3 sesiones.
 - Completa todos los módulos
 - Construye agentes LangGraph con MCP
 - Despliega APIs REST completas
+
+### 💎 Nivel Extra (Opcional)
+- Módulo 8: Usa servidores MCP existentes
+- Combina múltiples servidores MCP
+- Contribuye al ecosistema MCP
 
 ## 📖 Recursos Adicionales
 
@@ -155,12 +171,19 @@ mcp-workshop/
 │   ├── README.md
 │   ├── cliente_simple.py
 │   └── agente_simple.py
-└── 07-proyecto-final/
+├── 07-proyecto-final/
+│   ├── README.md
+│   ├── servidor_seguros.py
+│   ├── agente_seguros.py
+│   ├── api_rest.py
+│   └── test_agente.py
+└── 08-mcps-existentes/          # Módulo opcional
     ├── README.md
-    ├── servidor_seguros.py
-    ├── agente_seguros.py
-    ├── api_rest.py
-    └── test_agente.py
+    ├── INICIO-RAPIDO.md
+    ├── crear_db_ejemplo.py
+    ├── cliente_sqlite_mcp.py
+    ├── agente_sqlite_mcp.py
+    └── ejemplo_multi_servidor.py
 ```
 
 ## 🚦 Inicio Rápido
@@ -202,6 +225,21 @@ python ejemplo_simple.py
 - **No te saltes módulos**: Los conceptos se construyen progresivamente
 - **Usa el debugger**: Coloca breakpoints para entender el flujo
 - **Consulta la documentación**: Los enlaces a recursos son tu mejor aliado
+
+## 🌟 Módulo Opcional 8
+
+El **Módulo 8** es opcional pero altamente recomendado. Te enseña a:
+- Usar servidores MCP existentes de la comunidad
+- Conectar con el servidor SQLite MCP oficial
+- Combinar múltiples servidores en un solo agente
+- Aprovechar el ecosistema MCP sin escribir código de servidor
+
+**Ventajas**:
+- Ahorra tiempo usando soluciones probadas
+- Aprende de implementaciones maduras
+- Accede a cientos de integraciones existentes
+
+Para comenzar: [`08-mcps-existentes/INICIO-RAPIDO.md`](./08-mcps-existentes/INICIO-RAPIDO.md)
 
 ## 🤝 Soporte
 
