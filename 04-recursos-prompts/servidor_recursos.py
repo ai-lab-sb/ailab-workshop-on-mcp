@@ -89,17 +89,5 @@ def get_current_status():
     }, indent=2)
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Servidor MCP - Resources")
-    print("=" * 60)
-    print("\n🚀 Iniciando servidor en http://localhost:8104")
-    print("\n📋 Resources disponibles:")
-    print("   • docs://readme      - Documentación")
-    print("   • config://settings  - Configuración")
-    print("   • info://version     - Información de versión")
-    print("   • data://example     - Datos de ejemplo")
-    print("   • status://current   - Estado actual")
-    print("\n💡 Presiona Ctrl+C para detener el servidor\n")
-    print("=" * 60 + "\n")
-    
-    app.run(transport="streamable-http", host="0.0.0.0", port=8104)
+    # Usa stdio para comunicación directa entre procesos
+    app.run()

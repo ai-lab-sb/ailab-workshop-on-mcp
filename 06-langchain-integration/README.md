@@ -4,6 +4,8 @@
 
 En este módulo aprenderás a conectar servidores MCP con agentes LangGraph usando **langchain-mcp-adapters**, una biblioteca que convierte herramientas MCP en herramientas LangChain.
 
+**IMPORTANTE**: LangChain MCP Adapters requiere que los servidores MCP usen transporte HTTP (streamable_http), no stdio. Para este módulo, necesitarás iniciar los servidores manualmente con configuración HTTP.
+
 ## ¿Qué son los MCP Adapters?
 
 **langchain-mcp-adapters** es un puente entre MCP y LangChain que:
@@ -280,25 +282,36 @@ async def agente_con_manejo_errores():
 ## Archivo cliente_simple.py
 
 Implementa un cliente básico que:
-- Conecta con un servidor MCP
+- Conecta con un servidor MCP via HTTP
 - Lista herramientas disponibles
 - Invoca herramientas directamente
 - Muestra resultados
 
-Uso:
+**Paso 1: Iniciar el servidor HTTP**
 ```bash
+# En una terminal
+python servidor_math_http.py
+```
+
+**Paso 2: Ejecutar el cliente**
+```bash
+# En otra terminal
 python cliente_simple.py
 ```
 
 ## Archivo agente_simple.py
 
 Implementa un agente LangGraph completo que:
-- Usa herramientas MCP de matemáticas
+- Usa herramientas MCP de matemáticas via HTTP
 - Responde preguntas en lenguaje natural
 - Ejecuta cálculos usando las herramientas
 - Mantiene conversación fluida
 
-Uso:
+**Requisitos previos**:
+1. Servidor MCP HTTP corriendo: `python servidor_math_http.py`
+2. Variable de entorno GOOGLE_API_KEY configurada en archivo .env
+
+**Ejecutar el agente**:
 ```bash
 python agente_simple.py
 ```
@@ -375,5 +388,8 @@ Crea un script de chat en consola que:
 En el **Módulo 7** construirás un proyecto completo que integra todo lo aprendido: un agente LangGraph con API REST que consume un servidor MCP de base de datos.
 
 **Archivos del módulo**:
+- [`servidor_math_http.py`](./servidor_math_http.py) - Servidor MCP con transporte HTTP
 - [`cliente_simple.py`](./cliente_simple.py) - Cliente MCP básico
 - [`agente_simple.py`](./agente_simple.py) - Agente LangGraph con MCP
+
+**Nota**: Este módulo usa transporte HTTP porque LangChain MCP Adapters no soporta stdio. Los módulos anteriores (1-5) usan stdio para simplicidad en desarrollo local.

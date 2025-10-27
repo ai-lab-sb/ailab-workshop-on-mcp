@@ -401,5 +401,11 @@ Crea herramientas para:
 Continúa con el **Módulo 4** para aprender sobre recursos y prompts en MCP.
 
 **Archivos del módulo**:
-- [`servidor_texto.py`](./servidor_texto.py)
-- [`servidor_validaciones.py`](./servidor_validaciones.py)
+- [`servidor_texto.py`](./servidor_texto.py) - Servidor de procesamiento de texto
+- [`servidor_validaciones.py`](./servidor_validaciones.py) - Servidor de validación de datos
+- [`test_servidor.py`](./test_servidor.py) - Suite de testing con cliente MCP stdio
+
+**Para ejecutar los tests**:
+```bash
+python test_servidor.py
+```

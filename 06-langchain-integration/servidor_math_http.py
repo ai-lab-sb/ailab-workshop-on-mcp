@@ -1,6 +1,6 @@
 """
-Servidor MCP con operaciones matemáticas básicas.
-Implementa suma, resta, multiplicación y división con manejo de errores.
+Servidor MCP de matemáticas con transporte HTTP.
+Este servidor está configurado específicamente para uso con LangChain MCP Adapters.
 """
 
 from typing import Union
@@ -70,5 +70,17 @@ def divide(a: Union[int, float], b: Union[int, float]) -> float:
     return float(a / b)
 
 if __name__ == "__main__":
-    # Este modo permite comunicación directa entre procesos sin HTTP
-    app.run()
+    print("=" * 60)
+    print("Servidor MCP - Operaciones Matemáticas (HTTP)")
+    print("=" * 60)
+    print("\nIniciando servidor en http://localhost:8001")
+    print("\nHerramientas disponibles:")
+    print("   - add(a, b)      - Suma dos números")
+    print("   - subtract(a, b) - Resta dos números")
+    print("   - multiply(a, b) - Multiplica dos números")
+    print("   - divide(a, b)   - Divide dos números")
+    print("\nPresiona Ctrl+C para detener el servidor\n")
+    print("=" * 60 + "\n")
+    
+    # Usar transporte HTTP para integración con LangChain
+    app.run(transport="streamable-http", host="0.0.0.0", port=8001)

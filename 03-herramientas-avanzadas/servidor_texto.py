@@ -142,17 +142,5 @@ def extraer_palabras_unicas(texto: str, min_longitud: int = 1) -> List[str]:
     return sorted(palabras_filtradas)
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Servidor MCP - Procesamiento de Texto")
-    print("=" * 60)
-    print("\n🚀 Iniciando servidor en http://localhost:8102")
-    print("\n📋 Herramientas disponibles:")
-    print("   • analizar_texto        - Estadísticas del texto")
-    print("   • transformar_texto     - Transformaciones de texto")
-    print("   • buscar_en_texto       - Búsqueda de patrones")
-    print("   • limpiar_texto         - Limpieza de texto")
-    print("   • extraer_palabras_unicas - Palabras únicas")
-    print("\n💡 Presiona Ctrl+C para detener el servidor\n")
-    print("=" * 60 + "\n")
-    
-    app.run(transport="streamable-http", host="0.0.0.0", port=8102)
+    # Usa stdio para comunicación directa entre procesos
+    app.run()

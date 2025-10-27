@@ -195,17 +195,5 @@ def validar_rango_numerico(
         }
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Servidor MCP - Validación de Datos")
-    print("=" * 60)
-    print("\n🚀 Iniciando servidor en http://localhost:8103")
-    print("\n📋 Herramientas disponibles:")
-    print("   • validar_email          - Validación de emails")
-    print("   • validar_password       - Validación de contraseñas")
-    print("   • validar_url            - Validación de URLs")
-    print("   • validar_telefono       - Validación de teléfonos")
-    print("   • validar_rango_numerico - Validación de rangos")
-    print("\n💡 Presiona Ctrl+C para detener el servidor\n")
-    print("=" * 60 + "\n")
-    
-    app.run(transport="streamable-http", host="0.0.0.0", port=8103)
+    # Usa stdio para comunicación directa entre procesos
+    app.run()

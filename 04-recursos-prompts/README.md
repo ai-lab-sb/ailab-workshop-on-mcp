@@ -357,5 +357,11 @@ Continúa con el **Módulo 5** para integrar bases de datos con MCP.
 **Archivos del módulo**:
 - [`servidor_recursos.py`](./servidor_recursos.py) - Servidor con resources
 - [`servidor_prompts.py`](./servidor_prompts.py) - Servidor con prompts
+- [`test_servidor.py`](./test_servidor.py) - Suite de testing con cliente MCP stdio
+
+**Para ejecutar los tests**:
+```bash
+python test_servidor.py
+```
 
 **Nota**: En este workshop nos enfocamos principalmente en Tools por ser los más utilizados, pero Resources y Prompts son características poderosas de MCP que vale la pena explorar.

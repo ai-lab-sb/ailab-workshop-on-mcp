@@ -175,17 +175,5 @@ Mantén la funcionalidad original mientras mejoras el código según el objetivo
 """
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Servidor MCP - Prompts")
-    print("=" * 60)
-    print("\n🚀 Iniciando servidor en http://localhost:8105")
-    print("\n📋 Prompts disponibles:")
-    print("   • revisar_codigo       - Revisión de código")
-    print("   • generar_tests        - Generación de tests")
-    print("   • documentar_api       - Documentación de API")
-    print("   • explicar_codigo      - Explicación de código")
-    print("   • refactorizar_codigo  - Refactoring de código")
-    print("\n💡 Presiona Ctrl+C para detener el servidor\n")
-    print("=" * 60 + "\n")
-    
-    app.run(transport="streamable-http", host="0.0.0.0", port=8105)
+    # Usa stdio para comunicación directa entre procesos
+    app.run()

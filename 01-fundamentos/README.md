@@ -164,21 +164,41 @@ if __name__ == "__main__":
 
 Eso es todo para crear un servidor MCP funcional. 🎉
 
-## Transporte HTTP vs STDIO
+## Transporte STDIO vs HTTP
+
+MCP soporta diferentes métodos de comunicación según el caso de uso:
 
 ### STDIO (Standard Input/Output)
 - Cliente y servidor en la misma máquina
 - Comunicación via stdin/stdout
 - Usado por Claude Desktop, VS Code
-- **No requiere red**
+- No requiere red
+- **Recomendado para desarrollo local y testing**
+- El cliente inicia y maneja el ciclo de vida del servidor
 
 ### HTTP/SSE (Server-Sent Events)
 - Cliente y servidor pueden estar remotos
 - Comunicación via HTTP
-- Útil para servicios web
-- **Requiere puerto de red**
+- Útil para servicios web y APIs
+- Requiere puerto de red
+- **Recomendado para integración con agentes LangChain/LangGraph**
+- El servidor corre de forma independiente
 
-En este workshop usaremos **HTTP** porque es más fácil de testear y debuggear.
+### Cuándo usar cada uno
+
+**Usa STDIO cuando:**
+- Estás desarrollando y probando localmente
+- Quieres tests automáticos simples
+- No necesitas exponer el servidor en red
+- Trabajas con herramientas como Claude Desktop
+
+**Usa HTTP cuando:**
+- Necesitas acceso remoto al servidor
+- Integras con frameworks como LangChain
+- Construyes APIs o servicios web
+- Múltiples clientes deben conectarse simultáneamente
+
+En este workshop usaremos **STDIO para módulos de desarrollo (1-5)** y **HTTP para integración con LangChain (6-7)**.
 
 ## Ecosistema MCP
 
@@ -253,9 +273,11 @@ En el archivo `ejemplo_simple.py` encontrarás tu primer servidor MCP funcional.
 
 ### Ejercicio
 
-1. Lee y ejecuta `ejemplo_simple.py`
-2. Observa cómo se define una herramienta
-3. Prueba el servidor con diferentes entradas
-4. Modifica la herramienta para aceptar más parámetros
+1. Revisa `ejemplo_simple.py` para entender la estructura
+2. Ejecuta `python test_servidor.py` para probar el servidor
+3. Observa cómo funciona la comunicación stdio
+4. Modifica las herramientas para agregar más conversiones (Kelvin a Celsius, etc.)
 
-**Continúa con:** [`ejemplo_simple.py`](./ejemplo_simple.py)
+**Archivos del módulo:**
+- [`ejemplo_simple.py`](./ejemplo_simple.py) - Servidor de conversión de temperaturas
+- [`test_servidor.py`](./test_servidor.py) - Suite de testing con cliente MCP stdio
