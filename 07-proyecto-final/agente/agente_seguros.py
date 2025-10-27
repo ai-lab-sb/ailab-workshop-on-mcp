@@ -7,7 +7,7 @@ import os
 from typing import List, Dict, Any
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_mcp_adapters import MultiServerMCPClient
+from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
@@ -23,27 +23,33 @@ class AgenteSeguro:
         self.mcp_server_url = mcp_server_url
         self.llm = None
         self.graph = None
-        self._setup_client()
-        self._setup_graph()
+        self.tools = None
+        self._initialized = False
     
-    def _setup_client(self):
+    async def initialize(self):
+        """Inicializa el cliente MCP y el grafo (debe llamarse después de crear la instancia)"""
+        if not self._initialized:
+            await self._setup_client()
+            await self._setup_graph()
+            self._initialized = True
+    
+    async def _setup_client(self):
         """Configura el cliente MCP y el modelo LLM con las herramientas"""
         self.client = MultiServerMCPClient(
-            {"aseguradora": {"url": self.mcp_server_url, "transport": "streamable-http"}}
+            {"aseguradora": {"url": self.mcp_server_url, "transport": "streamable_http"}}
         )
         
-        tools = self.client.get_tools()
+        self.tools = await self.client.get_tools()
         
         self.llm = ChatGoogleGenerativeAI(
             model="gemini-2.5-flash",
             google_api_key=os.getenv("GOOGLE_API_KEY"),
             temperature=0.3
-        ).bind_tools(tools)
+        ).bind_tools(self.tools)
     
-    def _setup_graph(self):
+    async def _setup_graph(self):
         """Configura el grafo de LangGraph con el agente y las herramientas"""
-        tools = self.client.get_tools()
-        tool_node = ToolNode(tools=tools)
+        tool_node = ToolNode(tools=self.tools)
         
         def call_model(state: MessagesState) -> Dict[str, Any]:
             messages = state["messages"]
@@ -85,7 +91,7 @@ Si no encuentras información, sugiere alternativas de búsqueda."""
         memory = MemorySaver()
         self.graph = workflow.compile(checkpointer=memory)
     
-    def chat(self, message: str, thread_id: str = "default") -> str:
+    async def chat(self, message: str, thread_id: str = "default") -> str:
         """
         Envía un mensaje al agente y obtiene la respuesta.
         
@@ -96,7 +102,10 @@ Si no encuentras información, sugiere alternativas de búsqueda."""
         Returns:
             Respuesta del agente
         """
-        response = self.graph.invoke(
+        if not self._initialized:
+            await self.initialize()
+            
+        response = await self.graph.ainvoke(
             {"messages": [{"role": "user", "content": message}]},
             config={"configurable": {"thread_id": thread_id}}
         )

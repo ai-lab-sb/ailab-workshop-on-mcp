@@ -50,6 +50,7 @@ async def startup_event():
     try:
         print("Inicializando agente de seguros...")
         agente = AgenteSeguro()
+        await agente.initialize()
         print("✅ Agente inicializado correctamente")
     except Exception as e:
         print(f"❌ Error al inicializar agente: {e}")
@@ -85,7 +86,7 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=503, detail="Agente no inicializado")
     
     try:
-        respuesta = agente.chat(request.message, request.thread_id)
+        respuesta = await agente.chat(request.message, request.thread_id)
         return ChatResponse(
             response=respuesta,
             thread_id=request.thread_id,
@@ -132,9 +133,9 @@ async def health_check():
     
     # Verificar conexión con servidor MCP
     try:
-        if agente and agente.client:
+        if agente and agente.tools:
             health_status["mcp_server"] = "connected"
-            health_status["tools_available"] = len(agente.client.get_tools())
+            health_status["tools_available"] = len(agente.tools)
         else:
             health_status["mcp_server"] = "not_connected"
     except Exception:
